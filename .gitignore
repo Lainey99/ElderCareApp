@@ -8,3 +8,4 @@ local.properties
 *.apk
 *.aab
 *.hprof
+app/src/main/java/com/eldercare/app/config/AppConfig.kt

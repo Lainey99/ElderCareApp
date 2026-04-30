@@ -2,6 +2,7 @@ package com.eldercare.app.upload
 
 import android.content.Context
 import android.util.Log
+import com.eldercare.app.config.AppConfig
 import com.eldercare.app.db.AppDatabase
 import com.eldercare.app.db.EventEntity
 import com.eldercare.app.db.HeartbeatEntity
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit
 object UploadManager {
 
     private const val TAG = "UploadManager"
-    private const val BASE_URL = "http://10.32.10.130:3000/api"
+    private const val BASE_URL = AppConfig.BASE_URL
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
