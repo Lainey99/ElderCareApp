@@ -9,7 +9,7 @@ class ElderCareApplication : Application() {
 
     companion object {
         const val CHANNEL_ID = "elder_care_service"
-        const val CHANNEL_NAME = "老人关怀服务"
+        const val CHANNEL_NAME = "安心守护服务"
     }
 
     override fun onCreate() {

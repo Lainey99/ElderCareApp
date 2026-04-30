@@ -21,6 +21,7 @@ data class HeartbeatData(
     val wifiConnected: Boolean,
     val wifiSsid: String,
     val airplaneMode: Boolean,
+    val mobileDataEnabled: Boolean,
 
     // 音量
     val ringVolume: Int,

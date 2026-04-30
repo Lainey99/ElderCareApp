@@ -115,6 +115,7 @@ class MonitorService : Service() {
             wifiConnected = networkInfo.wifiConnected,
             wifiSsid = networkInfo.wifiSsid,
             airplaneMode = networkInfo.airplaneMode,
+            mobileDataEnabled = networkInfo.mobileDataEnabled,
             ringVolume = audioInfo.ringVolume,
             ringVolumeMax = audioInfo.ringVolumeMax,
             mediaVolume = audioInfo.mediaVolume,
@@ -150,6 +151,7 @@ class MonitorService : Service() {
             put("wifiConnected", heartbeat.wifiConnected)
             put("wifiSsid", heartbeat.wifiSsid)
             put("airplaneMode", heartbeat.airplaneMode)
+            put("mobileDataEnabled", heartbeat.mobileDataEnabled)
             put("ringVolume", heartbeat.ringVolume)
             put("ringVolumeMax", heartbeat.ringVolumeMax)
             put("mediaVolume", heartbeat.mediaVolume)
@@ -193,7 +195,7 @@ class MonitorService : Service() {
         )
 
         return NotificationCompat.Builder(this, ElderCareApplication.CHANNEL_ID)
-            .setContentTitle("老人关怀服务")
+            .setContentTitle("安心守护")
             .setContentText("正在监控设备状态")
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)

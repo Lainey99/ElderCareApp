@@ -2,7 +2,9 @@ package com.eldercare.app.collector
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
@@ -12,7 +14,8 @@ data class NetworkInfo(
     val wifiEnabled: Boolean,
     val wifiConnected: Boolean,
     val wifiSsid: String,
-    val airplaneMode: Boolean
+    val airplaneMode: Boolean,
+    val mobileDataEnabled: Boolean
 )
 
 object NetworkStateCollector {
@@ -32,14 +35,10 @@ object NetworkStateCollector {
 
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiEnabled = wifiManager.isWifiEnabled
-
-        // 用 networkStatus 判断 WiFi 是否连接，比 connectionInfo 更准确
         val wifiConnected = networkStatus == "WIFI"
 
-        // 获取 WiFi 名称
         @Suppress("DEPRECATION")
         val wifiSsid = try {
-            @Suppress("DEPRECATION")
             val info = wifiManager.connectionInfo
             info?.ssid?.replace("\"", "") ?: ""
         } catch (e: Exception) {
@@ -51,12 +50,29 @@ object NetworkStateCollector {
             Settings.Global.AIRPLANE_MODE_ON, 0
         ) != 0
 
+        // 检测蜂窝数据开关是否开启
+        val mobileDataEnabled = checkMobileDataEnabled(connectivityManager)
+
         return NetworkInfo(
             networkStatus = networkStatus,
             wifiEnabled = wifiEnabled,
             wifiConnected = wifiConnected,
             wifiSsid = wifiSsid,
-            airplaneMode = airplaneMode
+            airplaneMode = airplaneMode,
+            mobileDataEnabled = mobileDataEnabled
         )
+    }
+
+    private fun checkMobileDataEnabled(connectivityManager: ConnectivityManager): Boolean {
+        return try {
+            // 遍历所有网络，检查是否有蜂窝网络可用
+            val allNetworks = connectivityManager.allNetworks
+            allNetworks.any { network ->
+                val caps = connectivityManager.getNetworkCapabilities(network)
+                caps?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+            }
+        } catch (e: Exception) {
+            false
+        }
     }
 }
