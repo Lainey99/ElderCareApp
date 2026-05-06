@@ -32,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.eldercare.app.collector.*
 import com.eldercare.app.service.MonitorService
 import com.eldercare.app.upload.UploadManager
@@ -67,6 +69,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 状态栏透明 + 浅色图标
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
         setContent {
             MaterialTheme(
                 colorScheme = lightColorScheme(
@@ -129,7 +134,6 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("elder_care", Context.MODE_PRIVATE) }
-    var elderName by remember { mutableStateOf(prefs.getString("elder_name", "") ?: "") }
     var batteryInfo by remember { mutableStateOf<BatteryInfo?>(null) }
     var networkInfo by remember { mutableStateOf<NetworkInfo?>(null) }
     var audioInfo by remember { mutableStateOf<AudioInfo?>(null) }
@@ -182,23 +186,6 @@ fun MainScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Spacer(modifier = Modifier.height(4.dp))
-
-            // 设置
-            SectionCard {
-                SectionTitle(icon = Icons.Default.Person, title = "设备设置")
-                OutlinedTextField(
-                    value = elderName,
-                    onValueChange = { newValue ->
-                        elderName = newValue
-                        prefs.edit().putString("elder_name", newValue).apply()
-                    },
-                    label = { Text("姓名/备注") },
-                    placeholder = { Text("例如：奶奶、爸爸") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp)
-                )
-            }
 
             // 服务状态
             SectionCard {
@@ -396,7 +383,6 @@ fun MainScreen(
 
                             val json = JSONObject().apply {
                                 put("deviceId", deviceId)
-                                put("elderName", p.getString("elder_name", "未设置") ?: "未设置")
                                 put("appVersion", "1.0.0")
                                 put("androidVersion", Build.VERSION.SDK_INT.toString())
                                 put("brand", Build.BRAND)

@@ -2,7 +2,6 @@ package com.eldercare.app.model
 
 data class HeartbeatData(
     val deviceId: String,
-    val elderName: String,
     val appVersion: String,
     val androidVersion: String,
     val brand: String,

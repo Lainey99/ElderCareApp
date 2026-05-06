@@ -46,7 +46,7 @@ class MonitorService : Service() {
         }
     }
 
-    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var heartbeatJob: Job? = null
     private var wakeLock: PowerManager.WakeLock? = null
     private var heartbeatSeq = 0
@@ -100,7 +100,6 @@ class MonitorService : Service() {
 
         val heartbeat = HeartbeatData(
             deviceId = getDeviceUniqueId(),
-            elderName = getPrefs().getString("elder_name", "未设置") ?: "未设置",
             appVersion = "1.0.0",
             androidVersion = Build.VERSION.SDK_INT.toString(),
             brand = Build.BRAND,
@@ -136,7 +135,6 @@ class MonitorService : Service() {
 
         val json = JSONObject().apply {
             put("deviceId", heartbeat.deviceId)
-            put("elderName", heartbeat.elderName)
             put("appVersion", heartbeat.appVersion)
             put("androidVersion", heartbeat.androidVersion)
             put("brand", heartbeat.brand)
