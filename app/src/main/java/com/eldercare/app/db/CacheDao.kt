@@ -29,9 +29,6 @@ interface CacheDao {
     @Update
     suspend fun updateEvent(entity: EventEntity)
 
-    @Delete
-    suspend fun deleteEvent(entity: EventEntity)
-
     @Query("DELETE FROM event_queue WHERE uploadStatus = 2")
     suspend fun deleteUploadedEvents()
 }

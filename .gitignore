@@ -4,6 +4,7 @@ app/build/
 .idea/
 *.iml
 local.properties
+keystore.properties
 .DS_Store
 *.apk
 *.aab

@@ -22,12 +22,13 @@ class StateReceiver : BroadcastReceiver() {
             Intent.ACTION_AIRPLANE_MODE_CHANGED -> EventType.AIRPLANE_MODE_CHANGED
             "android.media.RINGER_MODE_CHANGED" -> EventType.RINGER_MODE_CHANGED
             Intent.ACTION_BATTERY_LOW -> EventType.BATTERY_LOW
-            Intent.ACTION_BATTERY_OKAY -> "BATTERY_OKAY"
+            Intent.ACTION_BATTERY_OKAY -> EventType.BATTERY_OKAY
             Intent.ACTION_POWER_CONNECTED -> EventType.CHARGING_STATE_CHANGED
             Intent.ACTION_POWER_DISCONNECTED -> EventType.CHARGING_STATE_CHANGED
             "android.net.wifi.WIFI_STATE_CHANGED" -> EventType.WIFI_STATE_CHANGED
             "android.net.wifi.STATE_CHANGE" -> EventType.WIFI_CONNECTION_CHANGED
             "android.location.PROVIDERS_CHANGED" -> EventType.LOCATION_SERVICE_CHANGED
+            "android.net.conn.CONNECTIVITY_CHANGE" -> EventType.NETWORK_CHANGED
             else -> return
         }
 
