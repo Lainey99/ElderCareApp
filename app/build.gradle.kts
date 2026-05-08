@@ -18,6 +18,17 @@ android {
     namespace = "com.eldercare.app"
     compileSdk = 35
 
+    val gitCommitHash: String by lazy {
+        try {
+            val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
+            val output = process.inputStream.bufferedReader().readText().trim()
+            process.waitFor()
+            output.ifBlank { "unknown" }
+        } catch (e: Exception) {
+            "unknown"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.eldercare.app"
         minSdk = 29
@@ -29,6 +40,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "GIT_COMMIT_HASH", "\"$gitCommitHash\"")
     }
 
     signingConfigs {
@@ -67,6 +80,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"

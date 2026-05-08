@@ -37,6 +37,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.eldercare.app.collector.*
 import com.eldercare.app.service.MonitorService
 import com.eldercare.app.upload.UploadManager
+import com.eldercare.app.ui.AboutScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,6 +74,8 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
         setContent {
+            var currentScreen by remember { mutableStateOf("main") }
+
             MaterialTheme(
                 colorScheme = lightColorScheme(
                     primary = Purple40,
@@ -85,11 +88,17 @@ class MainActivity : ComponentActivity() {
                     onSurface = Color(0xFF1C1B1F),
                 )
             ) {
-                MainScreen(
-                    onRequestPermissions = { requestPermissions() },
-                    onStartService = { startMonitorService() },
-                    onStopService = { MonitorService.stop(this) }
-                )
+                when (currentScreen) {
+                    "main" -> MainScreen(
+                        onRequestPermissions = { requestPermissions() },
+                        onStartService = { startMonitorService() },
+                        onStopService = { MonitorService.stop(this) },
+                        onAboutClick = { currentScreen = "about" }
+                    )
+                    "about" -> AboutScreen(
+                        onBack = { currentScreen = "main" }
+                    )
+                }
             }
         }
     }
@@ -130,7 +139,8 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     onRequestPermissions: () -> Unit,
     onStartService: () -> Unit,
-    onStopService: () -> Unit
+    onStopService: () -> Unit,
+    onAboutClick: () -> Unit
 ) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("elder_care", Context.MODE_PRIVATE) }
@@ -160,20 +170,34 @@ fun MainScreen(
                     .statusBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Default.Shield,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        "安心守护",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Shield,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            "安心守护",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    IconButton(onClick = onAboutClick) {
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = "关于",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
         }
